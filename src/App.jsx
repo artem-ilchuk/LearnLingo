@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshUserThunk } from "./redux/auth/operations";
+import Loader from "./components/Loader/Loader.jsx";
+import { selectIsRefreshing } from "./redux/auth/selectors";
+
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
+import RestrictedRoute from "./components/RestrictedRoute/RestrictedRoute.jsx";
+import PublicRoute from "./components/PublicRoute/PublicRoute.jsx";
+
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const TeachersPage = lazy(() => import("./pages/TeachersPage/TeachersPage"));
+const FavoritesPage = lazy(() => import("./pages/FavoritesPage/FavoritesPage"));
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const dispatch = useDispatch();
+  const isRefreshing = useSelector(selectIsRefreshing);
+  useEffect(() => {
+    dispatch(refreshUserThunk());
+  }, [dispatch]);
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/teachers" element={<TeachersPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

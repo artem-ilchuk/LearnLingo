@@ -1,0 +1,42 @@
+.auth_nav,
+.login {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.auth_nav {
+  gap: 16px;
+}
+
+.login {
+  gap: 8px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: var(--page-primecolor);
+}
+.log_text {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #121417;
+  text-wrap: nowrap;
+}
+.button {
+  padding: 20px 0;
+}
+.register {
+  border-radius: 12px;
+  border: none;
+  padding: 14px 39px;
+  width: 166px;
+  height: 48px;
+  background: #121417;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #fff;
+}

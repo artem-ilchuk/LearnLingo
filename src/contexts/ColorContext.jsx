@@ -1,46 +1,36 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useEffect } from "react";
 
-const colors = [
-  "var(--c1)",
-  "var(--c2)",
-  "var(--c3)",
-  "var(--c4)",
-  "var(--c5)",
-  "var(--c6)",
-  "var(--c7)",
-  "var(--c8)",
-  "var(--c9)",
-  "var(--c10)",
-];
+const colorPairs = {
+  "#FBE9BA": "#F4C550",
+  "#CBDED3": "#9FBAAE",
+  "#BFD6EA": "#9FB7CE",
+  "#F2C0BD": "#E0A39A",
+  "#F4C8BA": "#F0AA8D",
+};
 
-const ColorContext = createContext();
+const primaryColors = Object.keys(colorPairs);
 
-function getRandomColor(excludeColor) {
-  const filtered = colors.filter((c) => c !== excludeColor);
-  const randomIndex = Math.floor(Math.random() * filtered.length);
-  return filtered[randomIndex];
+const ColorContext = createContext(null);
+
+function getRandomPrimaryColor(exclude) {
+  const filtered = primaryColors.filter((color) => color !== exclude);
+  const index = Math.floor(Math.random() * filtered.length);
+  return filtered[index];
 }
 
 export function ColorProvider({ children }) {
-  const [color, setColor] = useState(null);
-
   useEffect(() => {
     const prevColor = localStorage.getItem("pageColor");
+    const primary = getRandomPrimaryColor(prevColor);
+    const secondary = colorPairs[primary];
 
-    const newColor = getRandomColor(prevColor);
-
-    localStorage.setItem("pageColor", newColor);
-
-    document.documentElement.style.setProperty("--page-color", newColor);
-
-    setColor(newColor);
+    localStorage.setItem("pageColor", primary);
+    document.documentElement.style.setProperty("--page-primecolor", primary);
+    document.documentElement.style.setProperty(
+      "--page-secondarycolor",
+      secondary
+    );
   }, []);
 
-  return (
-    <ColorContext.Provider value={color}>{children}</ColorContext.Provider>
-  );
-}
-
-export function usePageColor() {
-  return useContext(ColorContext);
+  return children;
 }
