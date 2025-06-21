@@ -1,0 +1,51 @@
+.achiv {
+  padding: 24px 0 148px 0;
+}
+.dash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--page-primecolor);
+}
+
+.block,
+.border {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.border {
+  position: relative;
+  justify-content: center;
+  padding-top: 40px;
+  gap: 100px;
+}
+.block {
+  position: relative;
+  z-index: 1;
+  height: 36px;
+  gap: 16px;
+}
+
+.main_text {
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: #121417;
+}
+.add_text,
+.add_text2 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: rgba(18, 20, 23, 0.7);
+  text-wrap: wrap;
+  max-width: 96px;
+}
+.add_text2 {
+  max-width: 74px;
+}

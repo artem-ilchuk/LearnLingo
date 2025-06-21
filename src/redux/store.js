@@ -1,6 +1,8 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { authReducer } from "./auth/slice";
+import { modalsReducer } from "./modal/slice";
+import { teachersReducer } from "./teachers/slice";
 import {
   persistStore,
   persistReducer,
@@ -14,12 +16,14 @@ import {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  modals: modalsReducer,
+  teachers: teachersReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["favorites"],
+  whitelist: ["auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

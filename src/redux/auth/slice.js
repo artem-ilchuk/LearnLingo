@@ -1,54 +1,79 @@
-import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-  loginThunk,
-  logoutThunk,
-  refreshUserThunk,
-  registerThunk,
+  registerUserThunk,
+  loginUserThunk,
+  logoutUserThunk,
+  updateFavoritesThunk,
 } from "./operations";
-
-const initialState = {
-  user: {
-    name: null,
-    email: null,
-  },
-  token: null,
-  isLoggedIn: false,
-  isRefreshing: false,
-};
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: {
+    user: { name: null, email: null },
+    favorites: [],
+    isLoggedIn: false,
+    isLoading: false,
+    isError: null,
+  },
+  reducers: {
+    addFavorite: (state, { payload }) => {
+      if (!state.favorites.includes(payload)) {
+        state.favorites.push(payload);
+      }
+    },
+    removeFavorite: (state, { payload }) => {
+      state.favorites = state.favorites.filter((id) => id !== payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(logoutThunk.fulfilled, () => {
+      .addCase(registerUserThunk.pending, (state) => {
+        state.isLoggedIn = false;
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(loginUserThunk.pending, (state) => {
+        state.isLoggedIn = false;
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(registerUserThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.user = {
+          uid: payload.uid,
+          name: payload.name,
+          email: payload.email,
+        };
+        state.isLoggedIn = true;
+        state.favorites = payload.favorites;
+      })
+      .addCase(loginUserThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.user = {
+          uid: payload.uid,
+          name: payload.name,
+          email: payload.email,
+        };
+        state.isLoggedIn = true;
+        state.favorites = payload.favorites;
+      })
+      .addCase(registerUserThunk.rejected, (state, { payload }) => {
+        state.isLoggedIn = false;
+        state.isLoading = false;
+        state.isError = payload;
+      })
+      .addCase(loginUserThunk.rejected, (state, { payload }) => {
+        state.isLoggedIn = false;
+        state.isLoading = false;
+        state.isError = payload;
+      })
+      .addCase(logoutUserThunk.fulfilled, () => {
         return {
           ...initialState,
         };
-      })
-      .addCase(refreshUserThunk.fulfilled, (state, action) => {
-        state.user.name = action.payload.name;
-        state.user.email = action.payload.email;
-        state.isLoggedIn = true;
-        state.isRefreshing = false;
-      })
-      .addCase(refreshUserThunk.pending, (state) => {
-        state.isRefreshing = true;
-      })
-      .addCase(refreshUserThunk.rejected, (state) => {
-        state.isRefreshing = false;
-      })
-      .addMatcher(
-        isAnyOf(registerThunk.fulfilled, loginThunk.fulfilled),
-        (state, action) => {
-          state.user = action.payload.user;
-          state.isLoggedIn = true;
-          state.token = action.payload.token;
-        }
-      );
+      });
   },
 });
 
+export const { addFavorite, removeFavorite } = authSlice.actions;
 export const authReducer = authSlice.reducer;
-export const { logout } = authSlice.actions;
-export const { themeToggle } = authSlice.actions;
