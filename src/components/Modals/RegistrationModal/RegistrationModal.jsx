@@ -5,12 +5,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-import s from "./LoginModal.module.css";
+import s from "./Registration.module.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { loginUser } from "../../../redux/auth/operations";
-import { closeLoginModal } from "../../../redux/modal/slice";
+import { registerUserThunk } from "../../../redux/auth/operations";
+import { closeRegistrationModal } from "../../../redux/modal/slice";
 
-const LoginModal = () => {
+const RegistrationModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -49,10 +49,10 @@ const LoginModal = () => {
 
   const onSubmit = async (values) => {
     try {
-      await dispatch(loginUser(values)).unwrap();
+      await dispatch(registerUserThunk(values)).unwrap();
       navigate("/teachers");
       reset();
-      dispatch(closeLoginModal());
+      dispatch(closeRegistrationModal());
     } catch (err) {
       console.error("Login error:", err);
     }
@@ -65,16 +65,30 @@ const LoginModal = () => {
           className={s.closeIcon}
           width="16"
           height="16"
-          onClick={() => dispatch(closeLoginModal())}
+          onClick={() => dispatch(closeRegistrationModal())}
         >
           <use href="/sprite.svg#icon-x" />
         </svg>
 
-        <h2 className={s.title}>Log in</h2>
+        <h2 className={s.title}>Registration</h2>
         <p className={s.text}>
-          Welcome back! Please enter your credentials to access your account and
-          continue your search for a teacher.
+          Thank you for your interest in our platform! In order to register, we
+          need some information. Please provide us with the following
+          information.
         </p>
+
+        <label htmlFor="name" className={s.switch}>
+          Name
+          <input
+            {...register("name")}
+            type="text"
+            id="name"
+            className={s.name}
+            autoComplete="name"
+            aria-label="Name"
+          />
+          <span className={s.eror}>{errors.name?.message}</span>
+        </label>
 
         <label htmlFor="email" className={s.switch}>
           Email
@@ -83,6 +97,8 @@ const LoginModal = () => {
             type="email"
             id="email"
             className={s.email}
+            autoComplete="email"
+            aria-label="Email"
           />
           <span className={s.eror}>{errors.email?.message}</span>
         </label>
@@ -95,6 +111,8 @@ const LoginModal = () => {
               type={passwordVisible ? "text" : "password"}
               id="password"
               className={s.password}
+              autoComplete="new-password"
+              aria-label="Password"
             />
             <span
               className={s.toggleIcon}
@@ -106,12 +124,17 @@ const LoginModal = () => {
           <span className={s.eror}>{errors.password?.message}</span>
         </label>
 
-        <button type="submit" className={s.submitBtn}>
-          Log In
+        <button
+          type="submit"
+          className={s.submitBtn}
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+        >
+          {isSubmitting ? "Register..." : "Register"}
         </button>
       </div>
     </form>
   );
 };
 
-export default LoginModal;
+export default RegistrationModal;

@@ -7,7 +7,7 @@ import * as Yup from "yup";
 
 import s from "./LoginModal.module.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { loginUser } from "../../../redux/auth/operations";
+import { loginUserThunk } from "../../../redux/auth/operations";
 import { closeLoginModal } from "../../../redux/modal/slice";
 
 const LoginModal = () => {
@@ -44,7 +44,7 @@ const LoginModal = () => {
 
   const onSubmit = async (values) => {
     try {
-      await dispatch(loginUser(values)).unwrap();
+      await dispatch(loginUserThunk(values)).unwrap();
       navigate("/teachers");
       reset();
       dispatch(closeLoginModal());

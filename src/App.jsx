@@ -2,9 +2,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { refreshUserThunk } from "./redux/auth/operations";
 import Loader from "./components/Loader/Loader.jsx";
-import { selectIsRefreshing } from "./redux/auth/selectors";
 
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
 import RestrictedRoute from "./components/RestrictedRoute/RestrictedRoute.jsx";
@@ -16,10 +14,7 @@ const FavoritesPage = lazy(() => import("./pages/FavoritesPage/FavoritesPage"));
 
 function App() {
   const dispatch = useDispatch();
-  const isRefreshing = useSelector(selectIsRefreshing);
-  useEffect(() => {
-    dispatch(refreshUserThunk());
-  }, [dispatch]);
+
   return (
     <>
       <Suspense fallback={<Loader />}>
